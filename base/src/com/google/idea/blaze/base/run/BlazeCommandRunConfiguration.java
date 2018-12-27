@@ -48,11 +48,9 @@ import com.google.idea.blaze.base.ui.UiUtil;
 import com.google.idea.sdkcompat.run.RunConfigurationBaseCompat;
 import com.intellij.execution.ExecutionException;
 import com.intellij.execution.Executor;
-import com.intellij.execution.RunnerIconProvider;
 import com.intellij.execution.configurations.ConfigurationFactory;
 import com.intellij.execution.configurations.LocatableConfigurationBase;
 import com.intellij.execution.configurations.ModuleRunProfile;
-import com.intellij.execution.configurations.RunConfiguration;
 import com.intellij.execution.configurations.RunConfigurationWithSuppressedDefaultDebugAction;
 import com.intellij.execution.configurations.RunProfileState;
 import com.intellij.execution.configurations.RuntimeConfigurationError;
@@ -72,14 +70,12 @@ import com.intellij.util.ui.UIUtil;
 import java.util.Collection;
 import javax.annotation.Nullable;
 import javax.swing.Box;
-import javax.swing.Icon;
 import javax.swing.JComponent;
 import org.jdom.Element;
 
 /** A run configuration which executes Blaze commands. */
 public class BlazeCommandRunConfiguration extends LocatableConfigurationBase
     implements BlazeRunConfiguration,
-        RunnerIconProvider,
         ModuleRunProfile,
         RunConfigurationWithSuppressedDefaultDebugAction {
 
@@ -425,12 +421,6 @@ public class BlazeCommandRunConfiguration extends LocatableConfigurationBase
   @Nullable
   public String suggestedName() {
     return handler.suggestedName(this);
-  }
-
-  @Override
-  @Nullable
-  public Icon getExecutorIcon(RunConfiguration configuration, Executor executor) {
-    return handler.getExecutorIcon(configuration, executor);
   }
 
   @Override

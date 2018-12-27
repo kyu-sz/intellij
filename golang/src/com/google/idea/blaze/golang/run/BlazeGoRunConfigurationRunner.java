@@ -30,8 +30,10 @@ import com.google.idea.blaze.base.command.buildresult.BuildResultHelper.GetArtif
 import com.google.idea.blaze.base.command.buildresult.BuildResultHelperProvider;
 import com.google.idea.blaze.base.ideinfo.TargetIdeInfo;
 import com.google.idea.blaze.base.ideinfo.TargetKey;
+import com.google.idea.blaze.base.io.FileOperationProvider;
 import com.google.idea.blaze.base.model.BlazeProjectData;
 import com.google.idea.blaze.base.model.primitives.Label;
+import com.google.idea.blaze.base.model.primitives.WorkspaceRoot;
 import com.google.idea.blaze.base.run.BlazeBeforeRunCommandHelper;
 import com.google.idea.blaze.base.run.BlazeCommandRunConfiguration;
 import com.google.idea.blaze.base.run.ExecutorType;
@@ -97,16 +99,39 @@ public class BlazeGoRunConfigurationRunner implements BlazeCommandRunConfigurati
       }
     }
 
-    File getExecutable(ExecutionEnvironment env) {
+    private static File getExecutable(ExecutionEnvironment env) {
       return env.getCopyableUserData(EXECUTABLE_KEY).get();
     }
 
-    String getExecutableArguments() {
+    private String getExecutableArguments() {
       return ParametersListUtil.join(state.getExeFlagsState().getRawFlags());
     }
 
+    /**
+     * Similar to {@link com.google.idea.blaze.python.run.BlazePyRunConfigurationRunner}.
+     *
+     * <p>Working directory should be the runfiles directory of the debug executable.
+     *
+     * <p>If the runfiles directory does not exist (unlikely) fall back to workspace root.
+     */
+    private static String getWorkingDirectory(Project project, File executable)
+        throws ExecutionException {
+      WorkspaceRoot root;
+      try {
+        root = WorkspaceRoot.fromProject(project);
+      } catch (IllegalStateException e) {
+        throw new ExecutionException(e);
+      }
+      String workspaceName = root.directory().getName();
+      File expectedPath = new File(executable.getPath() + ".runfiles", workspaceName);
+      if (FileOperationProvider.getInstance().isDirectory(expectedPath)) {
+        return expectedPath.getPath();
+      }
+      return root.directory().getPath();
+    }
+
     @Nullable
-    String getTestFilter() {
+    private String getTestFilter() {
       return state.getTestFilter();
     }
 
@@ -129,6 +154,7 @@ public class BlazeGoRunConfigurationRunner implements BlazeCommandRunConfigurati
           || target.getGoIdeInfo().getImportPath() == null) {
         throw new ExecutionException("Go target import path not found");
       }
+
       GoApplicationConfiguration nativeConfig =
           (GoApplicationConfiguration)
               GoApplicationRunConfigurationType.getInstance()
@@ -137,6 +163,9 @@ public class BlazeGoRunConfigurationRunner implements BlazeCommandRunConfigurati
       nativeConfig.setKind(Kind.PACKAGE);
       nativeConfig.setPackage(target.getGoIdeInfo().getImportPath());
       nativeConfig.setOutputDirectory(null);
+      nativeConfig.setParams(getExecutableArguments());
+      nativeConfig.setWorkingDirectory(getWorkingDirectory(project, executable));
+
       String testFilter = getTestFilter();
       if (testFilter != null) {
         Map<String, String> customEnvironment = new HashMap<>(nativeConfig.getCustomEnvironment());
@@ -150,24 +179,27 @@ public class BlazeGoRunConfigurationRunner implements BlazeCommandRunConfigurati
       if (module == null) {
         throw new ExecutionException("Workspace module not found");
       }
-      return new GoApplicationRunningState(env, module, nativeConfig) {
-        @Override
-        public boolean isDebug() {
-          return true;
-        }
+      GoApplicationRunningState nativeState =
+          new GoApplicationRunningState(env, module, nativeConfig) {
+            @Override
+            public boolean isDebug() {
+              return true;
+            }
 
-        @Nullable
-        @Override
-        public List<String> getBuildingTarget() {
-          return null;
-        }
+            @Nullable
+            @Override
+            public List<String> getBuildingTarget() {
+              return null;
+            }
 
-        @Nullable
-        @Override
-        public GoExecutor createBuildExecutor() {
-          return null;
-        }
-      };
+            @Nullable
+            @Override
+            public GoExecutor createBuildExecutor() {
+              return null;
+            }
+          };
+      nativeState.setOutputFilePath(executable.getPath());
+      return nativeState;
     }
 
     @Nullable

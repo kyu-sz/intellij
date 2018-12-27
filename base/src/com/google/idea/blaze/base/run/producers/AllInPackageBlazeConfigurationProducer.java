@@ -23,11 +23,13 @@ import com.google.idea.blaze.base.model.primitives.WorkspaceRoot;
 import com.google.idea.blaze.base.run.BlazeCommandRunConfiguration;
 import com.google.idea.blaze.base.run.BlazeCommandRunConfigurationType;
 import com.google.idea.blaze.base.run.state.BlazeCommandRunConfigurationCommonState;
+import com.google.idea.blaze.base.sync.projectview.WorkspaceFileFinder;
 import com.intellij.execution.actions.ConfigurationContext;
 import com.intellij.openapi.util.Ref;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.PsiDirectory;
 import com.intellij.psi.PsiElement;
+import java.io.File;
 import java.util.Objects;
 import javax.annotation.Nullable;
 
@@ -103,7 +105,21 @@ public class AllInPackageBlazeConfigurationProducer
       return null;
     }
     PsiDirectory dir = (PsiDirectory) location;
-    return isInWorkspace(root, dir) && BlazePackage.hasBlazePackageChild(dir) ? dir : null;
+    if (!isInWorkspace(root, dir)) {
+      return null;
+    }
+    WorkspaceFileFinder finder =
+        WorkspaceFileFinder.Provider.getInstance(context.getProject()).getWorkspaceFileFinder();
+    return finder != null
+            && BlazePackage.hasBlazePackageChild(dir, d -> relevantDirectory(finder, d))
+        ? dir
+        : null;
+  }
+
+  private static boolean relevantDirectory(WorkspaceFileFinder finder, PsiDirectory dir) {
+    // only enable this action for directories inside the project
+    File file = new File(dir.getVirtualFile().getPath());
+    return finder.isInProject(file);
   }
 
   @Nullable

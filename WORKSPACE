@@ -19,8 +19,8 @@ http_archive(
 http_archive(
     name = "intellij_ce_2018_3",
     build_file = "@//intellij_platform_sdk:BUILD.idea",
-    sha256 = "25eaa9641fa674d9fc10c2865e454187b16fac0f682ac50aef97a6ca1c75e53f",
-    url = "https://www.jetbrains.com/intellij-repository/releases/com/jetbrains/intellij/idea/ideaIC/2018.3.1/ideaIC-2018.3.1.zip",
+    sha256 = "76b3f12c5810ec791c49e018ace4f3d350856dc400b8dfdb708ca5c74ddaba2d",
+    url = "https://www.jetbrains.com/intellij-repository/releases/com/jetbrains/intellij/idea/ideaIC/2018.3.2/ideaIC-2018.3.2.zip",
 )
 
 # The plugin api for IntelliJ UE 2018.2. This is required to run UE-specific
@@ -37,8 +37,8 @@ http_archive(
 http_archive(
     name = "intellij_ue_2018_3",
     build_file = "@//intellij_platform_sdk:BUILD.ue",
-    sha256 = "d1cbac631b738f86773cb6b7f272f04e5252e7c2ec7af9a9af84bff0317e3874",
-    url = "https://www.jetbrains.com/intellij-repository/releases/com/jetbrains/intellij/idea/ideaIU/2018.3.1/ideaIU-2018.3.1.zip",
+    sha256 = "b5be15746578158b0996996e259694ea80e900da77d3d5e6a49c41974b8e19f0",
+    url = "https://www.jetbrains.com/intellij-repository/releases/com/jetbrains/intellij/idea/ideaIU/2018.3.2/ideaIU-2018.3.2.zip",
 )
 
 # The plugin api for CLion 2018.2. This is required to build CLwB,
@@ -169,8 +169,8 @@ http_archive(
 http_archive(
     name = "android_studio_3_3",
     build_file = "@//intellij_platform_sdk:BUILD.android_studio",
-    sha256 = "257a69d69843232643c970afed4b1c137a4b9335bf4405c1059d0378d9e63217",
-    url = "https://dl.google.com/android/studio/ide-zips/3.3.0.18/android-studio-ide-182.5160847-linux.zip",
+    sha256 = "1e62d69c5e9e97c9ff04af5c0edabf9d95126b155ceb8f1a9398b028fb2414e7",
+    url = "https://dl.google.com/android/studio/ide-zips/3.3.0.19/android-studio-ide-182.5183351-linux.zip",
 )
 
 # LICENSE: Common Public License 1.0
@@ -218,15 +218,15 @@ maven_jar(
 # LICENSE: The Apache Software License, Version 2.0
 maven_jar(
     name = "auto_value",
-    artifact = "com.google.auto.value:auto-value:1.6",
-    sha1 = "a3b1b1404f8acaa88594a017185e013cd342c9a8",
+    artifact = "com.google.auto.value:auto-value:1.6.2",
+    sha1 = "e7eae562942315a983eea3e191b72d755c153620",
 )
 
 # LICENSE: The Apache Software License, Version 2.0
 maven_jar(
     name = "auto_value_annotations",
-    artifact = "com.google.auto.value:auto-value-annotations:1.6",
-    sha1 = "da725083ee79fdcd86d9f3d8a76e38174a01892a",
+    artifact = "com.google.auto.value:auto-value-annotations:1.6.2",
+    sha1 = "ed193d86e0af90cc2342aedbe73c5d86b03fa09b",
 )
 
 # LICENSE: The Apache Software License, Version 2.0

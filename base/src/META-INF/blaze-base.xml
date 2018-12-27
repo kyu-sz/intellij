@@ -219,6 +219,8 @@
                     serviceImplementation="com.google.idea.blaze.base.sync.workspace.WorkspacePathResolverProviderImpl"/>
     <projectService serviceInterface="com.google.idea.blaze.base.sync.projectview.WorkspaceFileFinder$Provider"
                     serviceImplementation="com.google.idea.blaze.base.sync.projectview.WorkspaceFileFinderImpl$Provider"/>
+    <projectService serviceInterface="com.google.idea.blaze.base.sync.projectview.WorkspaceLanguageChecker"
+        serviceImplementation="com.google.idea.blaze.base.sync.projectview.WorkspaceLanguageCheckerImpl"/>
     <projectService serviceImplementation="com.google.idea.blaze.base.sync.SyncCache"/>
     <projectService serviceImplementation="com.google.idea.blaze.base.ui.problems.BlazeProblemsView"/>
     <projectService serviceImplementation="com.google.idea.blaze.base.ui.problems.ProblemsViewConfiguration"/>

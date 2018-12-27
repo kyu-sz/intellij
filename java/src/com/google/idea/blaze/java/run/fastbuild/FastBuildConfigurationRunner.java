@@ -45,6 +45,7 @@ import com.intellij.execution.Executor;
 import com.intellij.execution.RunCanceledByUserException;
 import com.intellij.execution.configurations.RunProfile;
 import com.intellij.execution.configurations.RunProfileState;
+import com.intellij.execution.configurations.WrappingRunConfiguration;
 import com.intellij.execution.filters.HyperlinkInfo;
 import com.intellij.execution.runners.ExecutionEnvironment;
 import com.intellij.execution.runners.ExecutionUtil;
@@ -56,6 +57,7 @@ import java.util.Objects;
 import java.util.concurrent.CancellationException;
 import java.util.concurrent.Future;
 import java.util.concurrent.atomic.AtomicReference;
+import javax.annotation.Nullable;
 
 /** Supports the execution of {@link BlazeCommandRunConfiguration}s in fast build mode. */
 public final class FastBuildConfigurationRunner implements BlazeCommandRunConfigurationRunner {
@@ -69,10 +71,10 @@ public final class FastBuildConfigurationRunner implements BlazeCommandRunConfig
 
   /** Returns false if this isn't a 'blaze test' invocation. */
   static boolean canRun(RunProfile runProfile) {
-    if (!(runProfile instanceof BlazeCommandRunConfiguration)) {
+    BlazeCommandRunConfiguration blazeCfg = getBlazeConfig(runProfile);
+    if (blazeCfg == null) {
       return false;
     }
-    BlazeCommandRunConfiguration blazeCfg = (BlazeCommandRunConfiguration) runProfile;
     return Objects.equals(blazeCfg.getHandler().getCommandName(), BlazeCommandName.TEST)
         && FastBuildService.getInstance(blazeCfg.getProject())
             .supportsFastBuilds(
@@ -96,7 +98,7 @@ public final class FastBuildConfigurationRunner implements BlazeCommandRunConfig
       return true;
     }
     Project project = env.getProject();
-    BlazeCommandRunConfiguration configuration = (BlazeCommandRunConfiguration) env.getRunProfile();
+    BlazeCommandRunConfiguration configuration = getBlazeConfig(env.getRunProfile());
     BlazeCommandRunConfigurationCommonState handlerState =
         (BlazeCommandRunConfigurationCommonState) configuration.getHandler().getState();
 
@@ -205,5 +207,15 @@ public final class FastBuildConfigurationRunner implements BlazeCommandRunConfig
                   service.logEvent(
                       FastBuildConfigurationRunner.class, "rerun_tests_with_blaze_link_clicked"));
     }
+  }
+
+  @Nullable
+  private static BlazeCommandRunConfiguration getBlazeConfig(RunProfile runProfile) {
+    if (runProfile instanceof WrappingRunConfiguration) {
+      runProfile = ((WrappingRunConfiguration) runProfile).getPeer();
+    }
+    return runProfile instanceof BlazeCommandRunConfiguration
+        ? (BlazeCommandRunConfiguration) runProfile
+        : null;
   }
 }

@@ -70,14 +70,7 @@ public final class FastBuildCompilerFactoryImplTest {
           ArtifactLocation.builder().setRelativePath(JDK_TOOLS_JAR.getPath()).build(),
           /* sourceVersion */ "8",
           /* targetVersion */ "8");
-  private static final JavaInfo JAVA_LIBRARY_WITHOUT_SOURCES =
-      JavaInfo.create(
-          /*sources*/ ImmutableSet.of(),
-          /*testClass*/ null,
-          /*testSize*/ null,
-          /* annotationProcessorClassNames */ ImmutableList.of(),
-          /* annotationProcessorClassPath */ ImmutableList.of(),
-          /* jvmFlags */ ImmutableList.of());
+  private static final JavaInfo JAVA_LIBRARY_WITHOUT_SOURCES = JavaInfo.builder().build();
 
   private FastBuildCompilerFactory compilerFactory;
   private final boolean useNewCompiler;

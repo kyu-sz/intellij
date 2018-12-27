@@ -24,13 +24,11 @@ import com.google.idea.blaze.base.run.state.RunConfigurationState;
 import com.google.idea.blaze.base.run.state.RunConfigurationStateEditor;
 import com.intellij.execution.ExecutionException;
 import com.intellij.execution.Executor;
-import com.intellij.execution.configurations.RunConfiguration;
 import com.intellij.execution.configurations.RunProfileState;
 import com.intellij.execution.configurations.RuntimeConfigurationException;
 import com.intellij.execution.runners.ExecutionEnvironment;
 import com.intellij.openapi.project.Project;
 import javax.annotation.Nullable;
-import javax.swing.Icon;
 import javax.swing.JComponent;
 import org.jdom.Element;
 
@@ -148,12 +146,6 @@ public class MockBlazeCommandRunConfigurationHandlerProvider
     @Override
     public String getHandlerName() {
       return "Mock Handler";
-    }
-
-    @Override
-    @Nullable
-    public Icon getExecutorIcon(RunConfiguration configuration, Executor executor) {
-      return null;
     }
   }
 }

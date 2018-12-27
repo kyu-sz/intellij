@@ -25,6 +25,7 @@ import com.google.common.util.concurrent.ListenableFuture;
 import com.google.common.util.concurrent.MoreExecutors;
 import com.google.idea.blaze.base.bazel.BuildSystemProvider;
 import com.google.idea.blaze.base.ideinfo.TargetKey;
+import com.google.idea.blaze.base.logging.EventLoggingService;
 import com.google.idea.blaze.base.model.BlazeProjectData;
 import com.google.idea.blaze.base.model.primitives.Kind;
 import com.google.idea.blaze.base.model.primitives.Label;
@@ -85,6 +86,8 @@ class AddSourceToProjectHelper {
       WorkspacePath workspacePath,
       boolean inProjectDirectories,
       Future<List<TargetInfo>> targetsFuture) {
+    EventLoggingService.getInstance()
+        .ifPresent(s -> s.logEvent(AddSourceToProjectHelper.class, "AddSourceToProject"));
     List<TargetInfo> targets;
     try {
       targets = targetsFuture.get();

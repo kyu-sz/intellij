@@ -175,12 +175,18 @@ public class MultipleJavaClassesTestConfigurationProducer
 
   @Nullable
   private static TargetInfo getTestTargetIfUnique(PsiDirectory directory) {
-    if (BlazePackage.hasBlazePackageChild(directory)) {
+    ProjectFileIndex index = ProjectFileIndex.SERVICE.getInstance(directory.getProject());
+    if (BlazePackage.hasBlazePackageChild(directory, dir -> relevantDirectory(index, dir))) {
       return null;
     }
     Set<PsiClass> classes = new HashSet<>();
     addClassesInDirectory(directory, classes);
     return getTestTargetIfUnique(classes);
+  }
+
+  private static boolean relevantDirectory(ProjectFileIndex index, PsiDirectory dir) {
+    // only search under java source roots
+    return index.isInSourceContent(dir.getVirtualFile());
   }
 
   private static void addClassesInDirectory(PsiDirectory directory, Set<PsiClass> list) {

@@ -29,7 +29,6 @@ import com.google.idea.blaze.java.run.fastbuild.FastBuildSuggestion;
 import com.google.idea.blaze.java.run.hotswap.ClassFileManifestBuilder;
 import com.intellij.execution.ExecutionException;
 import com.intellij.execution.Executor;
-import com.intellij.execution.configurations.RunConfiguration;
 import com.intellij.execution.configurations.RunProfile;
 import com.intellij.execution.configurations.RunProfileState;
 import com.intellij.execution.configurations.RuntimeConfigurationException;
@@ -38,7 +37,6 @@ import com.intellij.execution.runners.ExecutionEnvironment;
 import com.intellij.execution.runners.ExecutionUtil;
 import com.intellij.openapi.diagnostic.Logger;
 import javax.annotation.Nullable;
-import javax.swing.Icon;
 
 /** Java-specific handler for {@link BlazeCommandRunConfiguration}s. */
 public final class BlazeJavaRunConfigurationHandler implements BlazeCommandRunConfigurationHandler {
@@ -90,12 +88,6 @@ public final class BlazeJavaRunConfigurationHandler implements BlazeCommandRunCo
   @Override
   public String getHandlerName() {
     return "Java Handler";
-  }
-
-  @Override
-  @Nullable
-  public Icon getExecutorIcon(RunConfiguration configuration, Executor executor) {
-    return null;
   }
 
   private static class BlazeJavaRunConfigurationRunner
